@@ -110,16 +110,13 @@ static irqreturn_t btn_T1_handler(int irq, void *dev_id)
         return IRQ_NONE;
     }
     s_btn_T1_int_ct++;
+    
+    if (s_btn_T1_int_ct % 2) {
+        gpio_set_value(GPIO_L1, 0);
+    } else {
+        gpio_set_value(GPIO_L1, 1);
+    }
 	return IRQ_HANDLED;
-
-/*
-s_btn_T1_int_ct++;
-#ifdef BTN_T1_HANDLER_DEBUG
-DPRINT("count:%d\n", s_btn_T1_int_ct);
-#endif
-gpio_set_value(GPIO_L1, !gpio_get_value(GPIO_L1));
-return IRQ_HANDLED;
-*/
 }
 
 /*--------------------------------------------------------------------
@@ -131,7 +128,6 @@ static int __init btn_int_t1_init(void)
 {
 	int rc = 0;
 	int irqt = 0;
-    int ret = 0;
 
 	printk( KERN_INFO BTN_T1_MOD_NAME " V%s (compiled: %s %s)\n",
 	            BTN_T1_MOD_VER, __DATE__, __TIME__);
@@ -160,24 +156,34 @@ static int __init btn_int_t1_init(void)
 	 * requesting GPIO (input) and IRQ
 	 */
 /*
+int rc = 0;
+rc = gpio_request(GPIO_L1, "GPIO_L1");
+rc = gpio_direction_output(GPIO_L1, 0);
 gpio_set_value(GPIO_L1, !gpio_get_value(GPIO_T1));
 rc = gpio_request_one(GPIO_T1, GPIOF_IN, devName);
+s_btn_T1_irq = gpio_to_irq(GPIO_T1);
+rc = request_irq(s_btn_T1_irq, btn_T1_handler,
+IRQF_DISABLED|IRQF_TRIGGER_FALLING,
+BtnT1devName, NULL);
 */
 
 
+
+    gpio_request(GPIO_L1, "GPIO_L1");
+    gpio_direction_output(GPIO_L1, 0);
+    gpio_set_value(GPIO_L1, 1);
+    gpio_request_one(GPIO_T1, GPIOF_IN, btnT1devName);
+
+    /* init button1 interrupt */
     s_btn_T1_irq = gpio_to_irq(GPIO_T1);
-
-
-    ret = request_irq(s_btn_T1_irq, &btn_T1_handler, irqt, btnT1devName, (void*)btnT1devId);
-    if (ret != 0) {
-        printk(KERN_INFO BTN_T1_MOD_NAME ": failed to request_urq %d\n", ret);
+    rc = request_irq(s_btn_T1_irq, &btn_T1_handler, irqt, btnT1devName, (void*)btnT1devId);
+    if (rc != 0) {
+        printk(KERN_INFO BTN_T1_MOD_NAME ": failed to request_urq %d\n", rc);
         return -1;
     }
 
-	/********** INSERT YOUR CODE HERE *********/
 
 	printk(KERN_INFO BTN_T1_MOD_NAME ": initialize irq %d\n", s_btn_T1_irq);
-
 	return 0;
 	/*
 	 * error exits
