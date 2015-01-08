@@ -111,11 +111,12 @@ static irqreturn_t btn_T1_handler(int irq, void *dev_id)
     }
     s_btn_T1_int_ct++;
     
-    if (s_btn_T1_int_ct % 2) {
-        gpio_set_value(GPIO_L1, 0);
-    } else {
+    /*if (s_btn_T1_int_ct % 2) {
         gpio_set_value(GPIO_L1, 1);
-    }
+    } else {
+        gpio_set_value(GPIO_L1, 0);
+    }*/
+    gpio_set_value(GPIO_L1, !gpio_get_value(GPIO_L1));
 	return IRQ_HANDLED;
 }
 
@@ -128,6 +129,7 @@ static int __init btn_int_t1_init(void)
 {
 	int rc = 0;
 	int irqt = 0;
+    s_btn_T1_int_ct = 0;
 
 	printk( KERN_INFO BTN_T1_MOD_NAME " V%s (compiled: %s %s)\n",
 	            BTN_T1_MOD_VER, __DATE__, __TIME__);
@@ -171,7 +173,7 @@ BtnT1devName, NULL);
 
     gpio_request(GPIO_L1, "GPIO_L1");
     gpio_direction_output(GPIO_L1, 0);
-    gpio_set_value(GPIO_L1, 1);
+    gpio_set_value(GPIO_L1, gpio_get_value(GPIO_T1));
     gpio_request_one(GPIO_T1, GPIOF_IN, btnT1devName);
 
     /* init button1 interrupt */
@@ -200,10 +202,9 @@ releaseGpioL1:
  *--------------------------------------------------------------------------*/
 static void __exit btn_int_t1_exit(void)
 {
-    free_irq(s_btn_T1_irq, (void*)btnT1devId);
+    free_irq(s_btn_T1_irq, (char *) btnT1devId);
     gpio_free(GPIO_T1);
-    //gpio_free(GPIO_L1);
-
+    gpio_free(GPIO_L1);
 	printk(KERN_INFO BTN_T1_MOD_NAME " ISR counter: %d\n", s_btn_T1_int_ct);
    	printk(KERN_INFO BTN_T1_MOD_NAME " unloaded\n");
     	return;
