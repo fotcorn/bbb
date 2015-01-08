@@ -5,10 +5,12 @@
 # kernel Makefile or not.
 MODULE=button_poll
 KERNEL_VER=3.15.9
-TOOLCHAIN	:= /home/corn/Programme/gcc-linaro-arm-linux-gnueabihf-4.8-2014.04_linux/bin
+#TOOLCHAIN	:= /home/corn/Programme/gcc-linaro-arm-linux-gnueabihf-4.8-2014.04_linux/bin
+TOOLCHAIN	:= /opt/crosstools/gcc-linaro-arm-linux-gnueabihf-4.8-2014.04_linux/bin
 PLATFORM	:= arm-linux-gnueabihf-
 CROSS_CMP	:= $(TOOLCHAIN)/$(PLATFORM)
-ROOT_FS_PATH	:= /home/corn/projekte/embedded/rootfs
+#ROOT_FS_PATH	:= /home/corn/projekte/embedded/rootfs
+ROOT_FS_PATH	:= /opt/embedded/bbb/rootfs
 
 ifeq ($(KERNELRELEASE),)
 

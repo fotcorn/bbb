@@ -6,12 +6,14 @@
 
 MODULE=btn_isr_t1
 #KERNEL_VER=3.15.8-bone6
-#TOOLCHAIN	:= /opt/crosstools/gcc-linaro-arm-linux-gnueabihf-4.8-2013.07-1_linux/bin
 KERNEL_VER=3.15.9
-TOOLCHAIN	:= /home/corn/Programme/gcc-linaro-arm-linux-gnueabihf-4.8-2014.04_linux/bin
+#TOOLCHAIN	:= /home/corn/Programme/gcc-linaro-arm-linux-gnueabihf-4.8-2014.04_linux/bin
+TOOLCHAIN	:= /opt/crosstools/gcc-linaro-arm-linux-gnueabihf-4.8-2014.04_linux/bin
 PLATFORM	:= arm-linux-gnueabihf-
 CROSS_CMP	:= $(TOOLCHAIN)/$(PLATFORM)
-ROOT_FS_PATH	:= /home/corn/projekte/embedded/rootfs
+#ROOT_FS_PATH	:= /home/corn/projekte/embedded/rootfs
+ROOT_FS_PATH	:= /opt/embedded/bbb/rootfs
+
 
 ifeq ($(KERNELRELEASE),)
 
